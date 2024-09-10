@@ -1,0 +1,1 @@
+Set alerts when some sensor values exceed predefined thresholds and send notification to email.More specifically, here we have the code I made in MATLABAnalysis where I set a threshold in which the value that has exceeded the predefined threshold when the temperature is higher than 20 and the humidity is higher than 40 to send a message to email informing me about this event.

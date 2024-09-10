@@ -1,0 +1,35 @@
+% Replace with your actual ThingSpeak API key
+alert_api_key = 'TAK7+KcF5BPBBUHYvyX';
+
+% Read sensor data (replace with your channel ID)
+channelID = 2544010;
+readAPIKey = 'N0RDHAYPAOU8XWXW';
+data = thingSpeakRead(channelID, 'ReadKey', readAPIKey, 'NumPoints', 1);
+
+% Extract sensor data
+field1 = data(1); % Assuming field1 corresponds to the first field in your channel
+field2 = data(2); % Assuming field1 corresponds to the first field in your channel
+
+% Define your thresholds
+temperatureThreshold = 20; % Example: 20°C
+humidityThreshold = 40; % Example: 20%
+
+% Check if values exceed thresholds
+if field1 > temperatureThreshold
+    sendAlert('Temperature', field1, alert_api_key);
+end
+
+if field2 > humidityThreshold
+    sendAlert('Humidity', field2, alert_api_key);
+end
+
+function sendAlert(sensorName, value, alert_api_key)
+    alert_body = sprintf('%s value exceeded threshold: %.2f', sensorName, value);
+    alert_subject = 'Alert: Sensor Data';
+    alert_url = 'https://api.thingspeak.com/alerts/send';
+    jsonmessage = sprintf('{"subject": "%s", "body": "%s"}', alert_subject, alert_body);
+    options = weboptions('HeaderFields', {'Thingspeak-Alerts-API-Key', alert_api_key; 'Content-Type', 'application/json'});
+    
+    % Attempt to send the alert
+    result = webwrite(alert_url, jsonmessage, options);
+end
